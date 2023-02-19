@@ -1,8 +1,7 @@
 const Position = require('../models/Position')
 
-module.exports.getAll =  (req, res) => {
-    Position.find()
-    .populate("category")
+module.exports.getAll = async (req, res) => {
+    await Position.find()
     .exec((err, positions) => {
         if(!positions){
             res.status(404).json({
@@ -41,6 +40,7 @@ module.exports.getByCategoryId = async (req, res) => {
         res.status(500).send(err)
     })
 }
+
 
 module.exports.getById = async (req, res) => {
     await Position.findById(req.params.id)
@@ -84,6 +84,7 @@ module.exports.update = async (req, res) => {
                 message:"Элемент с данным идентификатором не найден."
             })
         }
+        console.log(req.body.key)
         res.status(200).json(position)
     }).catch((err) => {
         res.status(500).send(err)
@@ -92,15 +93,20 @@ module.exports.update = async (req, res) => {
 
 module.exports.create = async (req, res) => {
     try {
+        const imgsArr = []
+        for(var i = 0; i < req.files.length; i++){
+            imgsArr.push(req.files[i].path.replace('\\', '/'))
+        }
         const position = await new Position({
             name: req.body.name,
             category: req.body.category,
-            sizes: req.body.sizes,
+            sizes: [{"S" : 17}, {"M" : 23}, {"L" : 7}, {"XL" : 14}],
             description: req.body.description,
             price: req.body.price,
-            imageSrc: req.body.imageSrc,
+            imageSrc: imgsArr,
             inList: req.body.inList
         }).save()
+        console.log(imgsArr)
         res.status(201).json(position)
     } catch (error) {
         res.send(error)

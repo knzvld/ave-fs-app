@@ -29,6 +29,7 @@ module.exports.getById = async (req, res) => {
     })
 }
 
+
 module.exports.update = async (req, res) => {
     const updated = {
         name: req.body.name,
