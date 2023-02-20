@@ -1,14 +1,15 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const Sizes = new Schema({
+const Size = new Schema({
    size: {
       type: String
    },
    value: {
-      type: Number
+      type: String
    }
 })
+
 
 const Position = new Schema({
    name: {
@@ -19,7 +20,7 @@ const Position = new Schema({
     ref: 'categories',
     type: Schema.Types.ObjectId 
    },
-   sizes: [Sizes],
+   sizes: [Size],
    description: {
     type: String,
     required: false

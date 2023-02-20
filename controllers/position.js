@@ -73,10 +73,14 @@ module.exports.delete = async (req, res) => {
 }
 
 
-module.exports.update = async (req, res) => {   
+module.exports.update = async (req, res) => { 
+    const body = req.body
+    if(req.body.sizes){
+        body.sizes = JSON.parse(JSON.stringify(req.body.sizes))
+    }  
     await Position.findOneAndUpdate(
         {_id: req.params.id},
-        {$set: req.body},
+        {$set: body},
         {new: true}
     ).then((position) => {
         if(!position){
@@ -100,15 +104,16 @@ module.exports.create = async (req, res) => {
         const position = await new Position({
             name: req.body.name,
             category: req.body.category,
-            sizes: [{"S" : 17}, {"M" : 23}, {"L" : 7}, {"XL" : 14}],
+            sizes: JSON.parse(req.body.sizes),
             description: req.body.description,
             price: req.body.price,
             imageSrc: imgsArr,
             inList: req.body.inList
         }).save()
-        console.log(imgsArr)
+        console.log(JSON.parse(req.body.sizes))
         res.status(201).json(position)
     } catch (error) {
+        console.log(JSON.parse(req.body.sizes))
         res.send(error)
     }
 }
